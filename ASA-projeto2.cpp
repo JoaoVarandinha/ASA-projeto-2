@@ -3,46 +3,53 @@
 
 using namespace std;
 
-void readInput(int& N, int& M, int& m1, int& m2, int& K, vector<pair<int, int>>& paths) {
+typedef struct {
+    int num_inter;
+    int num_trucks;
+    int truck_min, truck_max;
+    int num_paths;
+    vector<vector<int>> paths;
+} input_data;
+
+
+input_data readInput() {
+    input_data info;
+
     //Read number of intersections, number of trucks, range of truck numbers and number of paths
-    cin >> N >> M >> m1 >> m2 >> K;
+    cin >> info.num_inter >> info.num_trucks >> info.truck_min >> info.truck_max >> info.num_paths;
 
     //Read guided paths between intersections
-    for(int i = 0; i < K; i++) {
+    for(int i = 0; i < info.num_paths; i++) {
         int a, b;
         cin >> a >> b;
-        paths.push_back({a, b});
+        info.paths[a].push_back(b);
     }
 
+    return info;
 }
 
-vector<vector<int>> buildGraph(int N, const vector<pair<int, int>>& paths) {
-   vector<vector<int>> graph(N+1);
+vector<vector<string>> solve(input_data info) {
+    vector<vector<string>> truck_paths;
 
-   for(const auto& path : paths) {
-        int origin = path.first;
-        int destination = path.second;
-
-        graph[origin].push_back(destination);
-   }
-
-   return graph;
+    
 }
+
 
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
-    /*
-    N: number of intersections
-    M: number of trucks
-    m1, m2: range of truck numbers
-    K: number of paths
-    paths: vector of guided paths between intersections
-    */
-    int N, M, m1, m2, K;
-    vector<pair<int, int>> paths;
+    input_data info = readInput();
 
-    readInput(N, M, m1, m2, K, paths);
+    vector<vector<string>> truck_paths = solve(info);    
 
+    for (int i = info.truck_min; i < info.truck_max; i++) {
+        cout << "C" << i;
+        for (string path : truck_paths[i]) {
+            cout << " " << path;
+        }
+        cout << "\n";
+    }
+
+    return 0;
 }
