@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <queue>
-#include <string>
 
 using namespace std;
 
@@ -64,39 +63,9 @@ vector<int> getTopologicalOrder(const input_data info) {
     return top_order;
 }
 
-vector<vector<string>> solve(const input_data info) {
+vector<vector<pair<int,int>>> solve(const input_data info) {
     vector<vector<int>> total_paths(info.num_inter + 1, vector<int>(info.num_inter + 1, 0));
-    vector<vector<string>> truck_routes(info.truck_max - info.truck_min + 1);
-    vector<int> top_order = getTopologicalOrder(info);
-    vector<int> paths_a_To_b(info.num_inter + 1, 0);
-    
-
-    for (int i = 1; i <= info.num_inter; i++) {
-        if (info.paths[i].size() == 0) continue;
-
-        for (int j = 1; j <= info.num_inter; j++) {
-            if (i == j) continue;
-
-
-
-        }
-    }
-
-    if (total_paths[i][j] != 0)    {
-        int truck_num = calculateTruckToPath(info.total_trucks, total_paths[i][j]);
-        if ((info.truck_min <= truck_num) && (truck_num <= info.truck_max)) {
-            truck_routes[truck_num - info.truck_min].push_back(to_string(i) + "," + to_string(j));
-        }
-    }
-    
-
-    return truck_routes;
-}
-
-
-vector<vector<string>> solver(const input_data info) {
-    vector<vector<int>> total_paths(info.num_inter + 1, vector<int>(info.num_inter + 1, 0));
-    vector<vector<string>> truck_routes(info.truck_max - info.truck_min + 1);
+    vector<vector<pair<int,int>>> truck_routes(info.truck_max - info.truck_min + 1);
     vector<int> top_order = getTopologicalOrder(info);
     // Para cada origem i, fazemos uma DP iterativa ao longo da ordem topológica
     vector<int> paths_a_To_b(info.num_inter + 1, 0);
@@ -111,6 +80,8 @@ vector<vector<string>> solver(const input_data info) {
             if (paths_a_To_b[j] == 0) continue;  // nada para propagar
             for (int k : info.paths[j]) {
                 paths_a_To_b[k] += paths_a_To_b[j];
+                if (paths_a_To_b[k] > info.total_trucks)
+                    paths_a_To_b[k] -= info.total_trucks;
             }
         }
 
@@ -122,7 +93,7 @@ vector<vector<string>> solver(const input_data info) {
 
             int truck_num = calculateTruckToPath(info.total_trucks, paths_a_To_b[t]);
             if (truck_num >= info.truck_min && truck_num <= info.truck_max) {
-                truck_routes[truck_num - info.truck_min].push_back(to_string(i) + "," + to_string(t));
+                truck_routes[truck_num - info.truck_min].emplace_back(i,t);
             }
         }
     }
@@ -138,12 +109,12 @@ int main() {
 
     const input_data info = readInput();
 
-    vector<vector<string>> truck_routes = solve(info);    
+    vector<vector<pair<int,int>>> truck_routes = solve(info);    
 
     for (int i = info.truck_min; i <= info.truck_max; i++) {
         cout << "C" << i;
-        for (string path : truck_routes[i - info.truck_min]) {
-            cout << " " << path;
+        for (pair<int,int> path : truck_routes[i - info.truck_min]) {
+            cout << " " << path.first << "," << path.second;
         }
         cout << "\n";
     }
