@@ -100,7 +100,16 @@ vector<vector<pair<int,int>>> solve(const input_data info) {
     return truck_routes;
 }
 
-
+void printData(input_data info, vector<vector<pair<int,int>>> truck_routes) {
+    for (int i = info.truck_min; i <= info.truck_max; i++) {
+        cout << "C" << i;
+        for (pair<int,int> path : truck_routes[i - info.truck_min]) {
+            cout << " " << path.first << "," << path.second;
+        }
+        cout << "\n";
+    }
+    return;
+}
 
 
 int main() {
@@ -111,13 +120,7 @@ int main() {
 
     vector<vector<pair<int,int>>> truck_routes = solve(info);    
 
-    for (int i = info.truck_min; i <= info.truck_max; i++) {
-        cout << "C" << i;
-        for (pair<int,int> path : truck_routes[i - info.truck_min]) {
-            cout << " " << path.first << "," << path.second;
-        }
-        cout << "\n";
-    }
+    printData(info, truck_routes);
 
     return 0;
 }
